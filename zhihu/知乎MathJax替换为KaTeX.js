@@ -97,7 +97,7 @@
 			}
 		}
 		// 修正mathjax中正常但会使katex报错的latex代码
-		return t
+		return (t + ' ')
 			.replace(/\\begin{array}(\[.*?\])?&/g, '\\begin{array}c') // 兼容\begin{array}&
 			.replace(/\\bbox(\[.*?\])?/g, '\\boxed') // 兼容\bbox（退化成\boxed）
 	}
