@@ -117,7 +117,7 @@
 	// 修正mathjax中正常但会使katex报错的latex代码
 	function normalize(str) {
 		return (str + ' ') // 兼容末尾单独的\
-			.replace(/(?<!\\)\s+(?=[^a-zA-Z])|(?<![a-zA-Z\\])\s+(?=[a-zA-Z])/g, '') // 清楚多余的空白字符，防止影响判断
+			.replace(/(?<!\\)\s+(?![a-zA-Z\s])|(?<![a-zA-Z\\])\s+(?=[a-zA-Z])/g, '') // 清楚多余的空白字符，防止影响判断
 			.replace(/\\begin{array}(\[.*?\])?&/g, '\\begin{array}c') // 兼容\begin{array}&
 	}
 
