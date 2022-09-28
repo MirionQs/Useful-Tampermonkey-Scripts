@@ -68,8 +68,7 @@
 		// TODO
 	} else if (url === 'https://www.zhihu.com/follow' || url === 'https://www.zhihu.com/') { // 首页
 		let observer = new MutationObserver(records => {
-			let target = records[0].target
-			renderByKatex(target) // ! 失败，麻
+			//renderByKatex(records[0].target) // ! 失败，麻
 		})
 		document.querySelectorAll('.RichContent').forEach(el => {
 			observer.observe(el, {
@@ -107,7 +106,6 @@
 					}
 				}
 				katex.render(latex, el, opt)
-				console.log('render end:', el)
 			} catch (err) {
 				el.innerHTML = '<code style="color: red;">' + err + '</code>'
 			}
