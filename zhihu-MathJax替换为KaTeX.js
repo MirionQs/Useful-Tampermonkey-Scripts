@@ -1,7 +1,7 @@
 "use strict";
 // ==UserScript==
 // @name         [知乎]MathJax替换为KaTeX
-// @version      0.9.5
+// @version      0.9.6
 // @author       Mirion
 // @match        https://zhuanlan.zhihu.com/*
 // @match        https://www.zhihu.com/question/*
@@ -19,7 +19,9 @@
     GM_addStyle('.katex-display>.katex{white-space:normal}.katex-display>.base{margin:0.25em 0}.katex-display{margin:0.5em 0}'); // 自动换行
     // 补充KaTeX缺少的宏
     const macros = {
-        '\\idotsint': '\\int\\cdots\\int'
+        '\\idotsint': '\\int\\cdots\\int',
+        '\\[': '',
+        '\\]': '', // 知乎自己定义的宏
     };
     katex.renderToString(`
 		\\def\\label#1{}
@@ -30,13 +32,40 @@
     });
     const url = window.location.href;
     if (url.startsWith('https://zhuanlan.zhihu.com/')) { // 文章
-        renderByKatex(document.getElementsByClassName('Post-RichTextContainer')[0]);
+        const container = document.querySelector('.Post-RichTextContainer');
+        renderByKatex(container);
     }
     else if (url.startsWith('https://www.zhihu.com/question/')) { // 问题
         // TODO
     }
     else if (url === 'https://www.zhihu.com/follow' || url === 'https://www.zhihu.com/') { // 首页
-        // TODO
+        // const observer = new MutationObserver((records) => {
+        // 	const record = records[0]
+        // 	if (record.oldValue!.includes('is-collapsed')) {
+        // 		console.log(record.target)
+        // 	}
+        // });
+        // const config = {
+        // 	attributes: true,
+        // 	attributeFilter: ['class'],
+        // 	attributeOldValue: true
+        // }
+        // const cardList = document.querySelector('[role="list"]')!
+        // cardList.childNodes.forEach(el => {
+        // 	const content = el as HTMLElement
+        // 	console.log(content)
+        // 	if (content.classList.length === 3) { // 排除广告卡片等
+        // 		observer.observe(content.querySelector('.RichContent')!, config)
+        // 	}
+        // })
+        // new MutationObserver((records) => {
+        // 	records.forEach(record => {
+        // 		const content = record.addedNodes[0] as HTMLElement
+        // 		if (content.classList.length === 3) {
+        // 			observer.observe(content.querySelector('.RichContent')!, config)
+        // 		}
+        // 	})
+        // }).observe(cardList, { childList: true })
     }
     function renderByKatex(element) {
         Array.prototype.forEach.call(element.getElementsByClassName('ztext-math'), (el) => {
@@ -55,7 +84,7 @@
         element.dataset.tex = ('\\displaystyle ' + element.dataset.tex) // 行内公式以行间模式显示
             .replace(/(?<=[^\\](\\\\)+)\\$/, '') // 去除末尾单独的'\'，否则KaTeX会报错
             .replace(/{(align|alignat|gather|equation)}/g, '{$1*}') // 使用这些环境时MathJax不会自动编号，因此KaTeX也不应该自动编号
-            .replace(/\\(left|middle|right|big|bigl|bigm|bigr|Big|Bigl|Bigm|Bigr|bigg|biggl|biggm|biggr|Bigg|Biggl|Biggm|Bigg){(.)}/g, '\\$1$2'); // KaTeX不允许形如'\big{/}'的代码
+            .replace(/\\(left|middle|right|big|bigl|bigm|bigr|Big|Bigl|Bigm|Bigr|bigg|biggl|biggm|biggr|Bigg|Biggl|Biggm|Biggr){(.)}/g, '\\$1$2'); // KaTeX不允许形如'\big{/}'的代码
     }
     function isDisplayFormula(element) {
         const latex = element.dataset.tex;
