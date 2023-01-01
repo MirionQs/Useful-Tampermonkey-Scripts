@@ -1,6 +1,6 @@
 "use strict";
 // ==UserScript==
-// @name         [知乎]MathJax替换为KaTeX
+// @name         知乎-MathJax替换为KaTeX
 // @version      0.9.6
 // @author       Mirion
 // @match        https://zhuanlan.zhihu.com/*
